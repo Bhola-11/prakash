@@ -1,0 +1,15 @@
+﻿services:
+  - type: web
+    name: medicare-project
+    runtime: python
+    buildCommand: ./build.sh
+    startCommand: gunicorn medicarehub.wsgi:application
+    envVars:
+      - key: DATABASE_URL
+        value: postgresql://neondb_owner:npg_2DjCuPSlw9Ae@ep-wandering-river-aeqkxgtw-pooler.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: DEBUG
+        value: 'False'
+      - key: SECRET_KEY
+        generateValue: true

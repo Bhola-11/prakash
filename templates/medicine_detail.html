@@ -1,0 +1,550 @@
+{% extends 'base.html' %}
+{% block title %}{{ medicine.name }} — Drug Information & Details | MediCare{% endblock %}
+
+{% block content %}
+<!-- Top Navigation & Breadcrumbs -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-sm text-textSec mb-6 border-b border-borderL pb-4">
+    <div class="flex items-center flex-wrap gap-1">
+        <a href="{% url 'catalogue:home' %}" class="hover:text-primary transition-colors">Home</a>
+        <span>&gt;</span>
+        <a href="{% url 'catalogue:medicine_list' %}" class="hover:text-primary transition-colors">Medicines</a>
+        <span>&gt;</span>
+        {% if medicine.category %}
+        <a href="{% url 'catalogue:category_detail' medicine.category.slug %}" class="hover:text-primary transition-colors">{{ medicine.category.name }}</a>
+        <span>&gt;</span>
+        {% endif %}
+        <span class="text-primary font-bold">{{ medicine.name }}</span>
+    </div>
+
+    <!-- Back Navigation Buttons -->
+    <div class="flex items-center gap-2">
+        <a href="{% url 'catalogue:medicine_list' %}" class="inline-flex items-center text-xs font-semibold px-3 py-1.5 rounded-lg border border-borderL bg-white hover:bg-gray-50 text-textMain transition-colors shadow-sm">
+            <i class="fas fa-arrow-left mr-1.5 text-primary"></i> All Medicines
+        </a>
+        {% if medicine.category %}
+        <a href="{% url 'catalogue:category_detail' medicine.category.slug %}" class="inline-flex items-center text-xs font-semibold px-3 py-1.5 rounded-lg border border-borderL bg-white hover:bg-gray-50 text-textMain transition-colors shadow-sm">
+            <i class="fas fa-folder-open mr-1.5 text-primary"></i> {{ medicine.category.name }}
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Main Top Section: Image & Key Facts -->
+<div class="flex flex-col lg:flex-row gap-8 mb-8">
+    <!-- Left: Image Box -->
+    <div class="w-full lg:w-1/3 flex-shrink-0">
+        <div class="card p-6 mb-4 flex items-center justify-center h-72 md:h-80 relative group bg-white border border-borderL shadow-sm rounded-2xl overflow-hidden">
+            <img src="{{ medicine.get_display_image_url }}" alt="{{ medicine.name }}" class="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-105" loading="lazy">
+            {% if medicine.prescription_required %}
+            <span class="absolute top-3 left-3 bg-red-100 text-red-700 text-xs font-bold px-2.5 py-1 rounded-md border border-red-200">
+                <i class="fas fa-prescription mr-1"></i> Rx Required
+            </span>
+            {% else %}
+            <span class="absolute top-3 left-3 bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-md border border-green-200">
+                <i class="fas fa-check-circle mr-1"></i> Over The Counter (OTC)
+            </span>
+            {% endif %}
+        </div>
+        
+        <!-- Thumbnail Gallery -->
+        <div class="flex space-x-2">
+            <div class="w-1/4 aspect-square card flex items-center justify-center cursor-pointer border-2 border-primary p-1 bg-white rounded-xl shadow-xs">
+                <img src="{{ medicine.get_display_image_url }}" class="max-h-full max-w-full object-contain" alt="Thumbnail">
+            </div>
+            <div class="w-1/4 aspect-square card flex items-center justify-center p-1 bg-white rounded-xl opacity-60 border border-borderL">
+                <img src="{{ medicine.get_display_image_url }}" class="max-h-full max-w-full object-contain" alt="Thumbnail">
+            </div>
+            <div class="w-1/4 aspect-square card flex items-center justify-center p-1 bg-white rounded-xl opacity-60 border border-borderL">
+                <img src="{{ medicine.get_display_image_url }}" class="max-h-full max-w-full object-contain" alt="Thumbnail">
+            </div>
+            <div class="w-1/4 aspect-square card flex items-center justify-center p-1 bg-white rounded-xl opacity-60 border border-borderL">
+                <img src="{{ medicine.get_display_image_url }}" class="max-h-full max-w-full object-contain" alt="Thumbnail">
+            </div>
+        </div>
+    </div>
+
+    <!-- Center: Medicine Information & Highlights -->
+    <div class="w-full lg:w-5/12 flex-grow">
+        <div class="flex flex-wrap items-center gap-2 mb-2">
+            {% if medicine.category %}
+            <a href="{% url 'catalogue:category_detail' medicine.category.slug %}" class="inline-block px-2.5 py-1 bg-mint text-primary rounded-md text-xs font-bold hover:bg-primary hover:text-white transition-colors">
+                <i class="fas fa-tag mr-1"></i> {{ medicine.category.name }}
+            </a>
+            {% endif %}
+            {% if medicine.subcategory %}
+            <span class="inline-block px-2.5 py-1 bg-pink-50 text-pink-600 rounded-md text-xs font-semibold">
+                <i class="fas fa-ribbon mr-1"></i> {{ medicine.subcategory.name }}
+            </span>
+            {% endif %}
+            {% if medicine.form %}
+            <span class="inline-block px-2.5 py-1 bg-gray-100 text-gray-700 rounded-md text-xs font-semibold">
+                {{ medicine.form }}
+            </span>
+            {% endif %}
+        </div>
+
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-textMain mb-1 leading-tight">{{ medicine.name }}</h1>
+        <p class="text-sm font-medium text-textSec mb-4">Generic: <span class="text-textMain font-semibold">{{ medicine.generic_name|default:medicine.composition }}</span></p>
+
+        <!-- Quick Summary Table -->
+        <div class="bg-gray-50/70 border border-borderL rounded-xl p-4 mb-6 text-sm">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-4">
+                <div>
+                    <span class="text-xs text-textSec font-semibold block uppercase">Active Ingredient</span>
+                    <span class="font-medium text-textMain">{{ medicine.active_ingredients|default:medicine.generic_name|default:medicine.composition }}</span>
+                </div>
+                <div>
+                    <span class="text-xs text-textSec font-semibold block uppercase">Strength</span>
+                    <span class="font-medium text-textMain">{{ medicine.strength|default:medicine.form|default:"Standard Formulation" }}</span>
+                </div>
+                <div>
+                    <span class="text-xs text-textSec font-semibold block uppercase">Dosage Form & Route</span>
+                    <span class="font-medium text-textMain">{{ medicine.form|default:"Oral Tablet" }} ({{ medicine.route|default:"Oral" }})</span>
+                </div>
+                <div>
+                    <span class="text-xs text-textSec font-semibold block uppercase">Manufacturer</span>
+                    <span class="font-medium text-textMain">{{ medicine.manufacturer.name }}</span>
+                </div>
+                {% if medicine.pack_size %}
+                <div>
+                    <span class="text-xs text-textSec font-semibold block uppercase">Pack Size</span>
+                    <span class="font-medium text-textMain">{{ medicine.pack_size }}</span>
+                </div>
+                {% endif %}
+                {% if medicine.brand_name %}
+                <div class="sm:col-span-2">
+                    <span class="text-xs text-textSec font-semibold block uppercase">Common Brand Names</span>
+                    <span class="font-medium text-textMain">{{ medicine.brand_name }}</span>
+                </div>
+                {% endif %}
+                <div class="sm:col-span-2">
+                    <span class="text-xs text-textSec font-semibold block uppercase">Storage</span>
+                    <span class="font-medium text-textMain">{{ medicine.storage|default:"Store below 25°C (77°F) in a dry place. Protect from moisture and light." }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Verified Source Metadata Badge -->
+        <div class="p-3 bg-mint/40 rounded-xl border border-primary/20 flex items-center justify-between text-xs text-textMain">
+            <div class="flex items-center">
+                <i class="fas fa-shield-check text-primary text-lg mr-2.5"></i>
+                <div>
+                    <strong>Verified Drug Information</strong>
+                    <span class="block text-textSec text-[11px]">Source: <a href="{{ medicine.source_url }}" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline font-semibold">{{ medicine.source_name }}</a></span>
+                </div>
+            </div>
+            {% if medicine.last_verified_at %}
+            <span class="text-[11px] text-textSec font-medium bg-white px-2 py-1 rounded border border-borderL">
+                Verified: {{ medicine.last_verified_at|date:"M Y" }}
+            </span>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Right Sidebar: Quick Order, Support & Sharing -->
+    <div class="w-full lg:w-1/4 flex-shrink-0 flex flex-col gap-5">
+        <!-- Direct WhatsApp Order Card -->
+        <div class="card p-5 border-2 border-[#25D366]/40 rounded-2xl bg-gradient-to-br from-[#25D366]/5 via-white to-mint/20 shadow-md relative overflow-hidden">
+            <div class="absolute -right-4 -top-4 w-20 h-20 bg-[#25D366]/10 rounded-full flex items-center justify-center pointer-events-none">
+                <i class="fab fa-whatsapp text-4xl text-[#25D366]/30"></i>
+            </div>
+            
+            <div class="flex items-center gap-2 mb-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#25D366] animate-ping"></span>
+                <span class="text-[11px] font-extrabold uppercase tracking-wider text-[#128C7E]">Instant Order / Export Quote</span>
+            </div>
+            <h3 class="font-extrabold text-textMain text-base mb-1">Order on WhatsApp</h3>
+            <p class="text-xs text-textSec mb-4">Direct inquiry with our export team. Fast pricing & bulk dispatch.</p>
+
+            <!-- Quantity Selector -->
+            <div class="mb-4">
+                <label class="block text-xs font-bold text-textSec uppercase mb-1.5">Select Quantity (Packs)</label>
+                <div class="flex items-center border border-borderL rounded-xl bg-white overflow-hidden shadow-xs">
+                    <button type="button" onclick="changeOrderQty(-1)" class="w-10 h-10 flex items-center justify-center text-textMain hover:bg-gray-100 font-bold text-base transition-colors focus:outline-none select-none">
+                        -
+                    </button>
+                    <input type="number" id="orderQuantityInput" value="1" min="1" max="10000" class="w-full text-center font-bold text-textMain text-sm border-x border-borderL focus:outline-none py-2" onchange="validateOrderQty(this)">
+                    <button type="button" onclick="changeOrderQty(1)" class="w-10 h-10 flex items-center justify-center text-textMain hover:bg-gray-100 font-bold text-base transition-colors focus:outline-none select-none">
+                        +
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main WhatsApp Action Button -->
+            <button type="button" onclick="sendMedicineWhatsAppOrder()" class="w-full bg-[#25D366] hover:bg-[#128C7E] text-white font-extrabold text-sm py-3 px-4 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 group transform active:scale-98">
+                <i class="fab fa-whatsapp text-xl group-hover:scale-110 transition-transform"></i>
+                <span>Order via WhatsApp &rarr;</span>
+            </button>
+
+            <div class="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-textSec">
+                <i class="fas fa-bolt text-amber-500"></i>
+                <span>Average response time: &lt; 15 mins</span>
+            </div>
+        </div>
+
+        <!-- Related Category Card -->
+        {% if medicine.category %}
+        <div class="card p-4 border border-borderL rounded-xl bg-white shadow-xs">
+            <h3 class="text-xs font-bold text-textSec uppercase mb-2">Therapeutic Category</h3>
+            <a href="{% url 'catalogue:category_detail' medicine.category.slug %}" class="flex items-center justify-between p-2.5 rounded-lg bg-gray-50 hover:bg-mint/40 border border-gray-100 transition-colors">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 rounded-full bg-mint text-primary flex items-center justify-center font-bold text-sm mr-2.5">
+                        <i class="fas fa-stethoscope"></i>
+                    </div>
+                    <span class="text-sm font-bold text-textMain">{{ medicine.category.name }}</span>
+                </div>
+                <i class="fas fa-chevron-right text-xs text-textSec"></i>
+            </a>
+        </div>
+        {% endif %}
+
+        <!-- Share & Save -->
+        <div class="card p-4 border border-borderL rounded-xl bg-white shadow-xs">
+            <h3 class="font-bold text-textMain mb-2.5 text-xs uppercase text-textSec">Share Drug Information</h3>
+            <div class="flex items-center gap-2">
+                <a href="https://api.whatsapp.com/send?text=Check out drug information for {{ medicine.name }}: {{ request.build_absolute_uri }}" target="_blank" rel="noopener noreferrer" class="w-9 h-9 rounded-lg border border-borderL flex items-center justify-center text-green-600 hover:bg-green-50 transition-colors" title="Share via WhatsApp">
+                    <i class="fab fa-whatsapp text-base"></i>
+                </a>
+                <button onclick="navigator.clipboard.writeText(window.location.href); alert('Medicine link copied to clipboard!');" class="w-9 h-9 rounded-lg border border-borderL flex items-center justify-center text-primary hover:bg-mint/40 transition-colors" title="Copy Link">
+                    <i class="fas fa-link text-sm"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Clinical Drug Monograph Interactive Tabs -->
+<div class="card border border-borderL rounded-2xl bg-white shadow-sm overflow-hidden mb-12">
+    <!-- Header Tabs Navigation Strip -->
+    <div class="flex border-b border-borderL overflow-x-auto hide-scroll bg-gray-50/80 px-4 pt-2 gap-1" id="monographTabNav">
+        <button type="button" onclick="switchMonographTab('overview')" id="tab-btn-overview" class="monograph-tab-btn px-4 py-3 font-extrabold text-xs sm:text-sm text-primary border-b-2 border-primary bg-white rounded-t-lg whitespace-nowrap flex items-center transition-all shadow-xs">
+            <i class="fas fa-file-medical-alt mr-2 text-primary"></i> Overview & Uses
+        </button>
+        <button type="button" onclick="switchMonographTab('mechanism')" id="tab-btn-mechanism" class="monograph-tab-btn px-4 py-3 font-semibold text-xs sm:text-sm text-textSec hover:text-primary hover:bg-white/60 border-b-2 border-transparent rounded-t-lg whitespace-nowrap flex items-center transition-all">
+            <i class="fas fa-cogs mr-2"></i> How It Works
+        </button>
+        <button type="button" onclick="switchMonographTab('dosage')" id="tab-btn-dosage" class="monograph-tab-btn px-4 py-3 font-semibold text-xs sm:text-sm text-textSec hover:text-primary hover:bg-white/60 border-b-2 border-transparent rounded-t-lg whitespace-nowrap flex items-center transition-all">
+            <i class="fas fa-prescription-bottle-alt mr-2"></i> Dosage & Admin
+        </button>
+        <button type="button" onclick="switchMonographTab('side-effects')" id="tab-btn-side-effects" class="monograph-tab-btn px-4 py-3 font-semibold text-xs sm:text-sm text-textSec hover:text-primary hover:bg-white/60 border-b-2 border-transparent rounded-t-lg whitespace-nowrap flex items-center transition-all">
+            <i class="fas fa-exclamation-triangle mr-2"></i> Side Effects & Warnings
+        </button>
+        <button type="button" onclick="switchMonographTab('faqs')" id="tab-btn-faqs" class="monograph-tab-btn px-4 py-3 font-semibold text-xs sm:text-sm text-textSec hover:text-primary hover:bg-white/60 border-b-2 border-transparent rounded-t-lg whitespace-nowrap flex items-center transition-all">
+            <i class="fas fa-question-circle mr-2"></i> FAQs
+        </button>
+    </div>
+
+    <!-- Monograph Content Panels -->
+    <div class="p-6 sm:p-8 min-h-[260px]">
+        <!-- 1. Tab Panel: Overview & Uses -->
+        <div id="tab-panel-overview" class="monograph-tab-panel">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-gray-50/50 p-5 rounded-xl border border-gray-100">
+                    <h3 class="font-extrabold text-base text-textMain mb-3 flex items-center">
+                        <span class="w-7 h-7 rounded-md bg-mint text-primary flex items-center justify-center mr-2.5 text-xs"><i class="fas fa-info-circle"></i></span>
+                        Medicine Overview
+                    </h3>
+                    <p class="text-sm text-textSec leading-relaxed">
+                        {{ medicine.overview|default:medicine.description }}
+                    </p>
+                </div>
+                <div class="bg-gray-50/50 p-5 rounded-xl border border-gray-100">
+                    <h3 class="font-extrabold text-base text-textMain mb-3 flex items-center">
+                        <span class="w-7 h-7 rounded-md bg-mint text-primary flex items-center justify-center mr-2.5 text-xs"><i class="fas fa-check-circle"></i></span>
+                        Indications & Approved Uses
+                    </h3>
+                    <p class="text-sm text-textSec leading-relaxed">
+                        {{ medicine.uses|default:"Indicated for the treatment and symptom management of conditions within its therapeutic class under appropriate clinical supervision." }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Tab Panel: Mechanism of Action / How It Works -->
+        <div id="tab-panel-mechanism" class="monograph-tab-panel hidden">
+            <div class="bg-gradient-to-br from-mint/20 via-white to-gray-50 p-6 rounded-xl border border-primary/20">
+                <h3 class="font-extrabold text-lg text-textMain mb-3 flex items-center">
+                    <span class="w-8 h-8 rounded-lg bg-mint text-primary flex items-center justify-center mr-2.5 text-sm"><i class="fas fa-dna"></i></span>
+                    How {{ medicine.name }} Works in the Body
+                </h3>
+                <p class="text-sm text-textSec leading-relaxed">
+                    {{ medicine.how_it_works|default:medicine.overview|default:"This medication acts on targeted cellular receptors and physiological pathways to manage indicated health conditions effectively." }}
+                </p>
+            </div>
+        </div>
+
+        <!-- 3. Tab Panel: Dosage & Administration -->
+        <div id="tab-panel-dosage" class="monograph-tab-panel hidden">
+            <div class="bg-blue-50/40 p-6 rounded-xl border border-blue-200/60 space-y-4">
+                <div class="flex items-center justify-between pb-3 border-b border-blue-100">
+                    <h3 class="font-extrabold text-lg text-blue-950 flex items-center">
+                        <span class="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center mr-2.5 text-sm"><i class="fas fa-prescription-bottle-alt"></i></span>
+                        Dosage & Administration Guidelines
+                    </h3>
+                    <span class="text-xs font-bold bg-blue-100 text-blue-800 px-3 py-1 rounded-full">Route: {{ medicine.route|default:"Oral" }}</span>
+                </div>
+                <div class="text-sm text-textMain leading-relaxed space-y-3">
+                    <p class="font-medium">{{ medicine.dosage_information|default:"Dosage depends on the specific product, patient age, medical condition and clinical severity. Follow prescribing information or physician guidelines." }}</p>
+                </div>
+                <div class="flex items-start gap-2.5 text-xs text-blue-800 bg-white/80 p-3.5 rounded-lg border border-blue-100">
+                    <i class="fas fa-info-circle mt-0.5 text-blue-600 flex-shrink-0"></i>
+                    <span><strong>Important Administration Note:</strong> Take strictly as directed by your healthcare practitioner. Do not exceed the prescribed daily dose or stop treatment abruptly without medical guidance.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Tab Panel: Side Effects & Warnings -->
+        <div id="tab-panel-side-effects" class="monograph-tab-panel hidden">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Common Side Effects -->
+                <div class="p-5 rounded-xl bg-amber-50/40 border border-amber-200/60">
+                    <h3 class="font-extrabold text-base text-textMain mb-2.5 flex items-center">
+                        <span class="w-7 h-7 rounded-md bg-amber-100 text-amber-700 flex items-center justify-center mr-2 text-xs"><i class="fas fa-exclamation-triangle"></i></span>
+                        Common Side Effects
+                    </h3>
+                    <p class="text-sm text-textSec leading-relaxed">
+                        {{ medicine.side_effects|default:"Generally well tolerated. Mild digestive discomfort, nausea, dizziness, or headache may occur in some individuals." }}
+                    </p>
+                </div>
+
+                <!-- Serious Warnings -->
+                <div class="p-5 rounded-xl bg-red-50/40 border border-red-200/60">
+                    <h3 class="font-extrabold text-base text-red-700 mb-2.5 flex items-center">
+                        <span class="w-7 h-7 rounded-md bg-red-100 text-red-700 flex items-center justify-center mr-2 text-xs"><i class="fas fa-bell"></i></span>
+                        Seek Immediate Medical Attention If:
+                    </h3>
+                    <p class="text-sm text-red-900 leading-relaxed font-medium">
+                        {{ medicine.serious_side_effects|default:"Discontinue use and seek urgent medical attention if you experience difficulty breathing, swelling of the face/throat, severe skin rash, or unusual heartbeat." }}
+                    </p>
+                </div>
+
+                <!-- Warnings & Precautions -->
+                <div class="p-5 rounded-xl bg-gray-50 border border-gray-100">
+                    <h3 class="font-extrabold text-base text-textMain mb-2.5 flex items-center">
+                        <span class="w-7 h-7 rounded-md bg-mint text-primary flex items-center justify-center mr-2 text-xs"><i class="fas fa-shield-alt"></i></span>
+                        Warnings & Precautions
+                    </h3>
+                    <p class="text-sm text-textSec leading-relaxed">
+                        {{ medicine.precautions|default:"Consult your doctor before use if you are pregnant, planning pregnancy, breastfeeding, or have pre-existing liver, kidney, or heart conditions." }}
+                    </p>
+                </div>
+
+                <!-- Contraindications & Drug Interactions -->
+                <div class="p-5 rounded-xl bg-purple-50/40 border border-purple-200/60">
+                    <h3 class="font-extrabold text-base text-purple-900 mb-2.5 flex items-center">
+                        <span class="w-7 h-7 rounded-md bg-purple-100 text-purple-700 flex items-center justify-center mr-2 text-xs"><i class="fas fa-ban"></i></span>
+                        Contraindications & Drug Interactions
+                    </h3>
+                    <div class="text-sm text-textSec leading-relaxed space-y-2">
+                        <div>
+                            <strong class="text-purple-950 font-semibold block text-xs uppercase">Contraindications:</strong>
+                            <span>{{ medicine.contraindications|default:"Hypersensitivity to active substance or any inactive excipients." }}</span>
+                        </div>
+                        {% if medicine.interactions %}
+                        <div class="pt-2 border-t border-purple-100">
+                            <strong class="text-purple-950 font-semibold block text-xs uppercase">Known Interactions:</strong>
+                            <span>{{ medicine.interactions }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. Tab Panel: FAQs -->
+        <div id="tab-panel-faqs" class="monograph-tab-panel hidden">
+            <h3 class="font-extrabold text-lg text-textMain mb-4 flex items-center">
+                <span class="w-8 h-8 rounded-lg bg-mint text-primary flex items-center justify-center mr-2.5 text-sm"><i class="fas fa-comments"></i></span>
+                Frequently Asked Questions for {{ medicine.name }}
+            </h3>
+            <div class="space-y-3">
+                {% if medicine.faqs %}
+                    {% for faq in medicine.faqs %}
+                    <details class="group bg-gray-50/80 border border-borderL rounded-xl p-4 transition-all" {% if forloop.first %}open{% endif %}>
+                        <summary class="font-bold text-sm text-textMain cursor-pointer list-none flex justify-between items-center select-none">
+                            <span>{{ faq.question }}</span>
+                            <span class="w-6 h-6 rounded-full bg-white border border-borderL flex items-center justify-center text-xs text-textSec group-open:rotate-180 transition-transform">
+                                <i class="fas fa-chevron-down"></i>
+                            </span>
+                        </summary>
+                        <div class="text-sm text-textSec mt-3 pt-3 border-t border-borderL leading-relaxed">
+                            {{ faq.answer }}
+                        </div>
+                    </details>
+                    {% endfor %}
+                {% else %}
+                    <details class="group bg-gray-50/80 border border-borderL rounded-xl p-4 transition-all" open>
+                        <summary class="font-bold text-sm text-textMain cursor-pointer list-none flex justify-between items-center select-none">
+                            <span>How should I store {{ medicine.name }}?</span>
+                            <span class="w-6 h-6 rounded-full bg-white border border-borderL flex items-center justify-center text-xs text-textSec group-open:rotate-180 transition-transform">
+                                <i class="fas fa-chevron-down"></i>
+                            </span>
+                        </summary>
+                        <div class="text-sm text-textSec mt-3 pt-3 border-t border-borderL leading-relaxed">
+                            {{ medicine.storage|default:"Store below 25°C (77°F) in a cool, dry place. Keep container tightly closed away from moisture, direct sunlight, and reach of children." }}
+                        </div>
+                    </details>
+                    <details class="group bg-gray-50/80 border border-borderL rounded-xl p-4 transition-all">
+                        <summary class="font-bold text-sm text-textMain cursor-pointer list-none flex justify-between items-center select-none">
+                            <span>What should I do if I miss a dose?</span>
+                            <span class="w-6 h-6 rounded-full bg-white border border-borderL flex items-center justify-center text-xs text-textSec group-open:rotate-180 transition-transform">
+                                <i class="fas fa-chevron-down"></i>
+                            </span>
+                        </summary>
+                        <div class="text-sm text-textSec mt-3 pt-3 border-t border-borderL leading-relaxed">
+                            Take the missed dose as soon as you remember. If it is almost time for your next scheduled dose, skip the missed dose and resume your normal dosing schedule. Do not take double doses.
+                        </div>
+                    </details>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Official Medical Disclaimer Notice -->
+    <div class="p-5 bg-gray-50 border-t border-borderL">
+        <div class="flex items-start gap-3 text-xs text-textSec leading-relaxed">
+            <i class="fas fa-shield-alt text-primary text-base mt-0.5 flex-shrink-0"></i>
+            <div>
+                <strong class="text-textMain font-bold block mb-0.5">Medical Information Disclaimer:</strong>
+                This information is provided for educational and catalogue purposes only and is not a substitute for professional medical advice, diagnosis, or treatment. Always read the medicine label and consult a qualified doctor or pharmacist before using any medicine.
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Related Medicines Section -->
+{% if related_medicines %}
+<div class="mb-12">
+    <div class="flex justify-between items-end mb-6">
+        <div>
+            <h2 class="text-2xl font-bold text-textMain mb-1">Related Medicines</h2>
+            <p class="text-textSec text-sm">Similar therapeutic formulations in {% if medicine.category %}{{ medicine.category.name }}{% else %}catalogue{% endif %}</p>
+        </div>
+        {% if medicine.category %}
+        <a href="{% url 'catalogue:category_detail' medicine.category.slug %}" class="text-primary text-sm font-bold hover:underline">View All in {{ medicine.category.name }} &rarr;</a>
+        {% endif %}
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        {% for rel in related_medicines %}
+        <div class="card p-4 flex flex-col hover:shadow-md transition-shadow border border-borderL rounded-xl bg-white h-full">
+            <div class="h-36 bg-white flex items-center justify-center rounded-lg mb-3 p-2">
+                <img src="{{ rel.get_display_image_url }}" alt="{{ rel.name }}" class="max-h-full max-w-full object-contain" loading="lazy">
+            </div>
+            <h4 class="font-bold text-textMain text-sm mb-1 text-truncate-2" title="{{ rel.name }}">{{ rel.name }}</h4>
+            <div class="text-xs text-textSec mb-2 bg-gray-100 inline-block px-2 py-0.5 rounded w-max">{{ rel.form|default:"Medicine" }}</div>
+            <div class="text-xs text-textSec mb-3"><span class="font-semibold text-textMain">Manufacturer:</span> {{ rel.manufacturer.name }}</div>
+            <div class="mt-auto pt-3 border-t border-borderL">
+                <a href="{% url 'catalogue:medicine_detail' rel.slug %}" class="btn-secondary w-full text-center block text-xs font-bold py-2">View Details &rarr;</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- JavaScript for Dynamic WhatsApp Order -->
+<script>
+function changeOrderQty(delta) {
+    const input = document.getElementById('orderQuantityInput');
+    if (!input) return;
+    let val = parseInt(input.value) || 1;
+    val = Math.max(1, Math.min(10000, val + delta));
+    input.value = val;
+}
+
+function validateOrderQty(input) {
+    let val = parseInt(input.value) || 1;
+    if (val < 1) val = 1;
+    if (val > 10000) val = 10000;
+    input.value = val;
+}
+
+function sendMedicineWhatsAppOrder() {
+    const qtyInput = document.getElementById('orderQuantityInput');
+    const qty = qtyInput ? qtyInput.value : 1;
+    
+    const medName = "{{ medicine.name|escapejs }}";
+    const genericName = "{{ medicine.generic_name|default:medicine.composition|escapejs }}";
+    const strength = "{{ medicine.strength|default:medicine.form|default:'Standard Formulation'|escapejs }}";
+    const packSize = "{{ medicine.pack_size|default:'Standard Pack'|escapejs }}";
+    const mfg = "{{ medicine.manufacturer.name|escapejs }}";
+    const cat = "{{ medicine.category.name|default:'Pharmaceutical'|escapejs }}";
+    const currentUrl = window.location.href;
+
+    const message = 
+`Hello MediCare Hub,
+
+I would like to order / inquire about this medicine:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📦 Product: ${medName}
+💊 Generic: ${genericName}
+💪 Strength: ${strength}
+🧴 Pack Size: ${packSize}
+🔢 Required Quantity: ${qty} Packs
+🏭 Manufacturer: ${mfg}
+🏷️ Category: ${cat}
+🔗 Product Link: ${currentUrl}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Please share availability, batch details, and export pricing.`;
+
+    const encodedMsg = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/919730318707?text=${encodedMsg}`;
+    window.open(whatsappUrl, '_blank');
+}
+
+// Interactive Monograph Tab Switching Function
+function switchMonographTab(tabKey) {
+    const validTabs = ['overview', 'mechanism', 'dosage', 'side-effects', 'faqs'];
+    if (!validTabs.includes(tabKey)) {
+        tabKey = 'overview';
+    }
+
+    // Update Tab Buttons
+    validTabs.forEach(key => {
+        const btn = document.getElementById('tab-btn-' + key);
+        const panel = document.getElementById('tab-panel-' + key);
+        
+        if (btn) {
+            if (key === tabKey) {
+                btn.className = "monograph-tab-btn px-4 py-3 font-extrabold text-xs sm:text-sm text-primary border-b-2 border-primary bg-white rounded-t-lg whitespace-nowrap flex items-center transition-all shadow-xs";
+                const icon = btn.querySelector('i');
+                if (icon) icon.className = icon.className.replace('text-textSec', 'text-primary');
+            } else {
+                btn.className = "monograph-tab-btn px-4 py-3 font-semibold text-xs sm:text-sm text-textSec hover:text-primary hover:bg-white/60 border-b-2 border-transparent rounded-t-lg whitespace-nowrap flex items-center transition-all";
+            }
+        }
+
+        if (panel) {
+            if (key === tabKey) {
+                panel.classList.remove('hidden');
+            } else {
+                panel.classList.add('hidden');
+            }
+        }
+    });
+
+    // Sync URL hash smoothly without jump
+    if (history.replaceState) {
+        history.replaceState(null, null, '#' + tabKey + '-section');
+    }
+}
+
+// Auto-activate tab from URL hash on load
+document.addEventListener('DOMContentLoaded', function() {
+    const hash = window.location.hash.toLowerCase();
+    if (hash.includes('mechanism') || hash.includes('work')) {
+        switchMonographTab('mechanism');
+    } else if (hash.includes('dosage') || hash.includes('admin')) {
+        switchMonographTab('dosage');
+    } else if (hash.includes('side') || hash.includes('warning') || hash.includes('effect')) {
+        switchMonographTab('side-effects');
+    } else if (hash.includes('faq')) {
+        switchMonographTab('faqs');
+    } else {
+        switchMonographTab('overview');
+    }
+});
+</script>
+{% endblock %}
+

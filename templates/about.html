@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}About Us | MediCare{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto py-8">
+    <h1 class="text-3xl font-bold text-textMain mb-6 text-center">About MediCare</h1>
+    
+    <div class="card p-8 mb-8">
+        <h2 class="text-xl font-bold text-primary mb-4">Our Mission</h2>
+        <p class="text-textSec mb-4 leading-relaxed">
+            MediCare Medicine Catalogue is dedicated to providing accurate, accessible, and organized medicine information. 
+            Our mission is to empower individuals with verified educational knowledge about medicines, their uses, side effects, 
+            and related health conditions.
+        </p>
+        <p class="text-textSec leading-relaxed">
+            We believe that understanding your medication is a crucial step towards better health management. By organizing 
+            information clearly by health categories and diseases, we make it easier for you to find what you need.
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="card p-6 border-l-4 border-l-primary">
+            <i class="fas fa-book-medical text-3xl text-primary mb-3"></i>
+            <h3 class="font-bold text-lg mb-2 text-textMain">Educational Purpose</h3>
+            <p class="text-sm text-textSec">All information provided on MediCare is strictly for educational purposes. We strive to present complex medical information in an easily understandable format.</p>
+        </div>
+        <div class="card p-6 border-l-4 border-l-primary">
+            <i class="fas fa-sitemap text-3xl text-primary mb-3"></i>
+            <h3 class="font-bold text-lg mb-2 text-textMain">Organized Knowledge</h3>
+            <p class="text-sm text-textSec">Our catalogue is meticulously organized by health conditions, diseases, and categories to help you navigate efficiently through thousands of medicines.</p>
+        </div>
+    </div>
+
+    <div class="bg-mint p-6 rounded-lg text-center border border-primary/20">
+        <h2 class="font-bold text-primary mb-2">Important Disclaimer</h2>
+        <p class="text-sm text-textSec">
+            MediCare is an information portal and does not provide medical advice, diagnosis, or treatment. 
+            Always seek the advice of your physician or other qualified health provider with any questions 
+            you may have regarding a medical condition.
+        </p>
+    </div>
+</div>
+{% endblock %}

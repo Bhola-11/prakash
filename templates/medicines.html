@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% block title %}All Medicines | MediCare{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<div class="text-sm text-textSec mb-6">
+    <a href="{% url 'catalogue:home' %}" class="hover:text-primary">Home</a> &gt; <span class="text-primary font-medium">All Medicines</span>
+</div>
+
+<div class="flex flex-col md:flex-row gap-8">
+    <!-- Sidebar -->
+    <aside class="w-full md:w-64 flex-shrink-0">
+        <h2 class="text-xl font-bold text-textMain mb-4">All Medicines</h2>
+        
+        <form method="GET" action="" id="filterForm">
+            <!-- Hidden inputs to preserve existing filters/search/view -->
+            {% if request.GET.q %}<input type="hidden" name="q" value="{{ request.GET.q }}">{% endif %}
+            <input type="hidden" name="view" value="{{ view_type }}">
+            
+            <div class="mb-6">
+                <h3 class="font-bold text-sm text-textMain mb-3 bg-gray-50 p-2 rounded">Medicine Categories</h3>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="{% url 'catalogue:medicine_list' %}" class="text-primary font-medium">All Medicines</a></li>
+                    <li><a href="{% url 'catalogue:category_list' %}" class="text-textSec hover:text-primary">Health Categories</a></li>
+                </ul>
+            </div>
+            
+            <div class="mb-6">
+                <h3 class="font-bold text-sm text-textMain mb-3 bg-gray-50 p-2 rounded">Filter by</h3>
+                
+                <div class="mb-4">
+                    <h4 class="font-bold text-xs text-textMain mb-2 uppercase tracking-wide">Form</h4>
+                    <div class="space-y-2 max-h-48 overflow-y-auto pr-2">
+                        {% for f in forms %}
+                        <label class="flex items-center text-sm text-textSec cursor-pointer">
+                            <input type="radio" name="form" value="{{ f }}" onchange="document.getElementById('filterForm').submit();" class="mr-2 text-primary focus:ring-primary" {% if request.GET.form == f %}checked{% endif %}>
+                            {{ f }}
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <h4 class="font-bold text-xs text-textMain mb-2 uppercase tracking-wide">Manufacturer</h4>
+                    <select name="manufacturer" onchange="document.getElementById('filterForm').submit();" class="w-full text-sm border border-borderL rounded p-2 focus:outline-none focus:border-primary">
+                        <option value="">Select Manufacturer</option>
+                        {% for m in manufacturers %}
+                        <option value="{{ m.name }}" {% if request.GET.manufacturer == m.name %}selected{% endif %}>{{ m.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            
+            {% if request.GET.form or request.GET.manufacturer %}
+            <a href="{% url 'catalogue:medicine_list' %}" class="text-sm text-red-500 hover:underline">Clear Filters</a>
+            {% endif %}
+        </form>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-grow">
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row justify-between items-center mb-6 border-b border-borderL pb-4">
+            <h1 class="text-2xl font-bold text-textMain">All Medicines</h1>
+            
+            <div class="flex items-center space-x-4 mt-4 md:mt-0">
+                <span class="text-sm text-textSec">Showing {{ page_obj.start_index }}–{{ page_obj.end_index }} of {{ page_obj.paginator.count }} medicines</span>
+                
+                <div class="flex border border-borderL rounded overflow-hidden bg-white">
+                    <a href="?view=grid{% if request.GET.form %}&form={{ request.GET.form }}{% endif %}{% if request.GET.manufacturer %}&manufacturer={{ request.GET.manufacturer }}{% endif %}" class="px-3 py-1 text-sm {% if view_type == 'grid' %}bg-primary text-white{% else %}text-textSec hover:bg-gray-50{% endif %}">
+                        <i class="fas fa-th-large"></i> Grid
+                    </a>
+                    <a href="?view=list{% if request.GET.form %}&form={{ request.GET.form }}{% endif %}{% if request.GET.manufacturer %}&manufacturer={{ request.GET.manufacturer }}{% endif %}" class="px-3 py-1 text-sm border-l border-borderL {% if view_type == 'list' %}bg-primary text-white{% else %}text-textSec hover:bg-gray-50{% endif %}">
+                        <i class="fas fa-list"></i> List
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        {% if view_type == 'grid' %}
+        <!-- Grid View -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {% for med in page_obj %}
+            <div class="card p-4 flex flex-col hover:shadow-md transition-shadow">
+                <div class="h-40 bg-white flex items-center justify-center rounded-lg mb-4 p-2">
+                    <img src="{{ med.get_display_image_url }}" alt="{{ med.name }}" class="max-h-full max-w-full object-contain">
+                </div>
+                <h4 class="font-bold text-textMain mb-1 text-truncate-2" title="{{ med.name }}">{{ med.name }}</h4>
+                <div class="text-xs text-textSec mb-2 bg-gray-100 inline-block px-2 py-1 rounded w-max">{{ med.form }}</div>
+                <div class="text-xs text-textSec mb-4"><span class="font-medium text-textMain">Manufacturer:</span> <br>{{ med.manufacturer.name }}</div>
+                
+                <div class="mt-auto pt-4 border-t border-borderL">
+                    <a href="{% url 'catalogue:medicine_detail' med.slug %}" class="btn-secondary w-full text-center block text-sm">View Details &rarr;</a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-full py-8 text-center text-textSec">
+                <p>No medicines found matching your criteria.</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <!-- List View -->
+        <div class="space-y-4">
+            {% for med in page_obj %}
+            <div class="card p-4 flex flex-col md:flex-row items-center hover:shadow-md transition-shadow">
+                <div class="w-32 h-32 bg-white flex items-center justify-center rounded-lg mb-4 md:mb-0 md:mr-6 flex-shrink-0 p-2">
+                    <img src="{{ med.get_display_image_url }}" alt="{{ med.name }}" class="max-h-full max-w-full object-contain">
+                </div>
+                <div class="flex-grow text-center md:text-left mb-4 md:mb-0">
+                    <h4 class="font-bold text-lg text-textMain mb-1">{{ med.name }}</h4>
+                    <div class="text-sm text-textSec mb-1">{{ med.form }} | {{ med.generic_name|truncatechars:40 }}</div>
+                    <div class="text-sm text-textSec"><span class="font-medium text-textMain">Manufacturer:</span> {{ med.manufacturer.name }}</div>
+                </div>
+                <div class="flex-shrink-0 w-full md:w-auto">
+                    <a href="{% url 'catalogue:medicine_detail' med.slug %}" class="btn-secondary w-full md:w-auto text-center block text-sm">View Details &rarr;</a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="py-8 text-center text-textSec">
+                <p>No medicines found matching your criteria.</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <div class="mt-8 flex justify-center">
+            <div class="flex space-x-1">
+                {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.form %}&form={{ request.GET.form }}{% endif %}{% if request.GET.manufacturer %}&manufacturer={{ request.GET.manufacturer }}{% endif %}&view={{ view_type }}" class="w-8 h-8 flex items-center justify-center rounded border border-borderL text-textSec hover:bg-gray-50">&laquo;</a>
+                {% endif %}
+                
+                {% for i in page_obj.paginator.page_range %}
+                    {% if page_obj.number == i %}
+                    <span class="w-8 h-8 flex items-center justify-center rounded bg-primary text-white">{{ i }}</span>
+                    {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %}
+                    <a href="?page={{ i }}{% if request.GET.form %}&form={{ request.GET.form }}{% endif %}{% if request.GET.manufacturer %}&manufacturer={{ request.GET.manufacturer }}{% endif %}&view={{ view_type }}" class="w-8 h-8 flex items-center justify-center rounded border border-borderL text-textSec hover:bg-gray-50">{{ i }}</a>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if request.GET.form %}&form={{ request.GET.form }}{% endif %}{% if request.GET.manufacturer %}&manufacturer={{ request.GET.manufacturer }}{% endif %}&view={{ view_type }}" class="w-8 h-8 flex items-center justify-center rounded border border-borderL text-textSec hover:bg-gray-50">&raquo;</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
