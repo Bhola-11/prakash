@@ -3,7 +3,7 @@
     name: medicare-project
     runtime: python
     buildCommand: ./build.sh
-    startCommand: gunicorn medicarehub.wsgi:application
+    startCommand: gunicorn medicarehub.wsgi:application --bind 0.0.0.0:
     envVars:
       - key: DATABASE_URL
         value: postgresql://neondb_owner:npg_2DjCuPSlw9Ae@ep-wandering-river-aeqkxgtw-pooler.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require

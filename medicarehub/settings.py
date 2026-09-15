@@ -86,7 +86,7 @@ WSGI_APPLICATION = 'medicarehub.wsgi.application'
 
 DATABASE_URL = os.environ.get('DATABASE_URL')
 
-if DATABASE_URL:
+if DATABASE_URL and DATABASE_URL.strip():
     DATABASES = {
         'default': dj_database_url.parse(
             DATABASE_URL,
@@ -138,14 +138,23 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+    },
+}
+
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # Configurable medicine image source folder
 MEDICINE_IMAGE_ROOT = os.environ.get(
     'MEDICINE_IMAGE_ROOT',
-    r'C:\Users\admin\Documents\Resume-project\EXPORT MEDICINES\EXPORT MEDICINES'
+    str(BASE_DIR / 'media')
 )
 
 # Default primary key field type
