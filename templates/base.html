@@ -99,7 +99,7 @@
     </style>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body class="flex flex-col min-h-screen">
+<body class="flex flex-col min-h-screen pb-16 md:pb-0">
     <!-- Top Bar -->
     <div class="{% if request.path == '/' %}bg-slate-950/60 backdrop-blur-md text-slate-300 border-b border-white/10{% else %}bg-gradient-to-r from-slate-900 via-[#0A2540] to-slate-900 text-slate-200 border-b border-slate-800{% endif %} py-2 px-4 md:px-8 text-sm flex justify-between items-center hidden md:flex relative z-40">
         <div class="flex space-x-6">
@@ -115,22 +115,22 @@
     </div>
 
     <!-- Main Header -->
-    <header id="mainHeader" class="{% if request.path == '/' %}header-transparent text-white{% else %}bg-white/95 text-textMain shadow-sm border-b border-borderL{% endif %} sticky top-0 z-40 py-3.5 px-4 md:px-8 transition-all duration-300">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between">
+    <header id="mainHeader" class="{% if request.path == '/' %}header-transparent text-white{% else %}bg-white/95 text-textMain shadow-sm border-b border-borderL{% endif %} sticky top-0 z-40 py-2.5 md:py-3.5 px-4 md:px-8 transition-all duration-300">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
             <!-- Logo -->
-            <a href="{% url 'catalogue:home' %}" class="flex items-center mb-3 md:mb-0 group">
-                <i class="fas fa-plus-square text-cyan-400 text-3xl mr-2.5 transition-transform group-hover:scale-105"></i>
+            <a href="{% url 'catalogue:home' %}" class="flex items-center group flex-shrink-0">
+                <i class="fas fa-plus-square text-cyan-400 text-2xl sm:text-3xl mr-2 sm:mr-2.5 transition-transform group-hover:scale-105"></i>
                 <div>
-                    <div class="text-xl font-bold leading-tight tracking-wide {% if request.path == '/' %}text-white{% else %}text-primary{% endif %}">MediCare</div>
-                    <div class="text-xs {% if request.path == '/' %}text-slate-300{% else %}text-textSec{% endif %}">Wholesale Distribution</div>
+                    <div class="text-lg sm:text-xl font-bold leading-tight tracking-wide {% if request.path == '/' %}text-white{% else %}text-primary{% endif %}">MediCare</div>
+                    <div class="text-[10px] sm:text-xs {% if request.path == '/' %}text-slate-300{% else %}text-textSec{% endif %}">Wholesale Distribution</div>
                 </div>
             </a>
 
-            <!-- Search -->
-            <div class="w-full md:w-1/3 mb-3 md:mb-0">
+            <!-- Desktop Search Bar -->
+            <div class="hidden md:block w-1/3">
                 <form action="{% url 'catalogue:search' %}" method="GET" class="relative">
                     <input type="text" name="q" placeholder="Search medicines, diseases, categories..." 
-                           class="w-full {% if request.path == '/' %}bg-white/15 border-white/25 text-white placeholder-slate-300 focus:bg-white/25 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400{% else %}bg-white border-borderL text-textMain placeholder-textSec focus:border-primary focus:ring-1 focus:ring-primary{% endif %} border rounded-lg py-2 px-4 focus:outline-none transition"
+                           class="w-full {% if request.path == '/' %}bg-white/15 border-white/25 text-white placeholder-slate-300 focus:bg-white/25 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400{% else %}bg-white border-borderL text-textMain placeholder-textSec focus:border-primary focus:ring-1 focus:ring-primary{% endif %} border rounded-lg py-2 px-4 focus:outline-none transition text-sm"
                            value="{{ request.GET.q }}">
                     <button type="submit" class="absolute right-3 top-2.5 {% if request.path == '/' %}text-slate-300 hover:text-cyan-300{% else %}text-textSec hover:text-primary{% endif %} transition">
                         <i class="fas fa-search"></i>
@@ -138,26 +138,103 @@
                 </form>
             </div>
 
-            <!-- Navigation -->
-            <nav class="flex space-x-6">
+            <!-- Desktop Navigation -->
+            <nav class="hidden md:flex space-x-6">
                 <a href="{% url 'catalogue:home' %}" class="nav-link flex flex-col items-center {% if request.path == '/' %}active !text-cyan-300 !border-b-cyan-400{% endif %}">
-                    <i class="fas fa-home mb-1"></i> Home
+                    <i class="fas fa-home mb-1 text-sm"></i> Home
                 </a>
                 <a href="{% url 'catalogue:medicine_list' %}" class="nav-link flex flex-col items-center {% if 'medicines' in request.path %}active{% endif %}">
-                    <i class="fas fa-pills mb-1"></i> Medicines
+                    <i class="fas fa-pills mb-1 text-sm"></i> Medicines
                 </a>
                 <a href="{% url 'catalogue:category_list' %}" class="nav-link flex flex-col items-center {% if 'categories' in request.path %}active{% endif %}">
-                    <i class="fas fa-heartbeat mb-1"></i> Health Categories
+                    <i class="fas fa-heartbeat mb-1 text-sm"></i> Health Categories
                 </a>
                 <a href="{% url 'catalogue:about' %}" class="nav-link flex flex-col items-center {% if 'about' in request.path %}active{% endif %}">
-                    <i class="fas fa-info-circle mb-1"></i> About Us
+                    <i class="fas fa-info-circle mb-1 text-sm"></i> About Us
                 </a>
                 <a href="{% url 'catalogue:contact' %}" class="nav-link flex flex-col items-center {% if 'contact' in request.path %}active{% endif %}">
-                    <i class="fas fa-envelope mb-1"></i> Contact Us
+                    <i class="fas fa-envelope mb-1 text-sm"></i> Contact Us
                 </a>
             </nav>
+
+            <!-- Mobile Action Buttons (Search Toggle & Hamburger Menu) -->
+            <div class="flex items-center gap-2 md:hidden">
+                <button id="mobileSearchToggle" class="w-9 h-9 rounded-lg flex items-center justify-center {% if request.path == '/' %}bg-white/15 text-white hover:bg-white/25{% else %}bg-slate-100 text-textMain hover:bg-slate-200{% endif %} transition-colors" aria-label="Toggle Search">
+                    <i class="fas fa-search text-sm"></i>
+                </button>
+                <button id="mobileMenuOpenBtn" class="w-9 h-9 rounded-lg flex items-center justify-center {% if request.path == '/' %}bg-white/15 text-white hover:bg-white/25{% else %}bg-slate-100 text-textMain hover:bg-slate-200{% endif %} transition-colors" aria-label="Open Mobile Menu">
+                    <i class="fas fa-bars text-base"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Expandable Search Bar -->
+        <div id="mobileSearchContainer" class="hidden md:hidden pt-3 max-w-7xl mx-auto">
+            <form action="{% url 'catalogue:search' %}" method="GET" class="relative">
+                <input type="text" name="q" placeholder="Search medicines, categories..." 
+                       class="w-full {% if request.path == '/' %}bg-white/20 border-white/30 text-white placeholder-slate-200 focus:bg-white/30 focus:border-cyan-300{% else %}bg-slate-50 border-borderL text-textMain placeholder-textSec focus:bg-white focus:border-primary{% endif %} border rounded-lg py-2 pl-4 pr-10 focus:outline-none text-sm"
+                       value="{{ request.GET.q }}">
+                <button type="submit" class="absolute right-3 top-2.5 {% if request.path == '/' %}text-slate-200{% else %}text-textSec{% endif %}">
+                    <i class="fas fa-search text-sm"></i>
+                </button>
+            </form>
         </div>
     </header>
+
+    <!-- Slide-Out Mobile Navigation Drawer -->
+    <div id="mobileDrawerBackdrop" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 opacity-0 pointer-events-none transition-opacity duration-300 md:hidden"></div>
+    <div id="mobileDrawer" class="fixed top-0 right-0 bottom-0 w-[82%] max-w-xs bg-slate-900 text-white z-50 translate-x-full transition-transform duration-300 ease-out shadow-2xl flex flex-col md:hidden overflow-y-auto">
+        <!-- Drawer Header -->
+        <div class="p-5 border-b border-slate-800 flex items-center justify-between bg-slate-950/80">
+            <div class="flex items-center">
+                <i class="fas fa-plus-square text-cyan-400 text-2xl mr-2.5"></i>
+                <div>
+                    <div class="font-bold text-base text-white">MediCare</div>
+                    <div class="text-[10px] text-cyan-300">Wholesale Distribution</div>
+                </div>
+            </div>
+            <button id="mobileMenuCloseBtn" class="w-8 h-8 rounded-lg bg-slate-800 text-slate-300 hover:text-white flex items-center justify-center transition-colors">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <!-- Drawer Navigation Links -->
+        <div class="p-4 space-y-1.5 flex-grow">
+            <a href="{% url 'catalogue:home' %}" class="flex items-center gap-3.5 px-3.5 py-3 rounded-xl {% if request.path == '/' %}bg-cyan-500/20 text-cyan-300 border border-cyan-400/30{% else %}text-slate-200 hover:bg-slate-800/70 hover:text-white{% endif %} transition font-medium text-sm">
+                <div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-cyan-400"><i class="fas fa-home text-xs"></i></div>
+                <span>Home</span>
+            </a>
+            <a href="{% url 'catalogue:medicine_list' %}" class="flex items-center gap-3.5 px-3.5 py-3 rounded-xl {% if 'medicines' in request.path %}bg-cyan-500/20 text-cyan-300 border border-cyan-400/30{% else %}text-slate-200 hover:bg-slate-800/70 hover:text-white{% endif %} transition font-medium text-sm">
+                <div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-cyan-400"><i class="fas fa-pills text-xs"></i></div>
+                <span>All Medicines</span>
+            </a>
+            <a href="{% url 'catalogue:category_list' %}" class="flex items-center gap-3.5 px-3.5 py-3 rounded-xl {% if 'categories' in request.path %}bg-cyan-500/20 text-cyan-300 border border-cyan-400/30{% else %}text-slate-200 hover:bg-slate-800/70 hover:text-white{% endif %} transition font-medium text-sm">
+                <div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-cyan-400"><i class="fas fa-heartbeat text-xs"></i></div>
+                <span>Health Categories</span>
+            </a>
+            <a href="{% url 'catalogue:about' %}" class="flex items-center gap-3.5 px-3.5 py-3 rounded-xl {% if 'about' in request.path %}bg-cyan-500/20 text-cyan-300 border border-cyan-400/30{% else %}text-slate-200 hover:bg-slate-800/70 hover:text-white{% endif %} transition font-medium text-sm">
+                <div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-cyan-400"><i class="fas fa-info-circle text-xs"></i></div>
+                <span>About Us</span>
+            </a>
+            <a href="{% url 'catalogue:contact' %}" class="flex items-center gap-3.5 px-3.5 py-3 rounded-xl {% if 'contact' in request.path %}bg-cyan-500/20 text-cyan-300 border border-cyan-400/30{% else %}text-slate-200 hover:bg-slate-800/70 hover:text-white{% endif %} transition font-medium text-sm">
+                <div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-cyan-400"><i class="fas fa-envelope text-xs"></i></div>
+                <span>Contact & Quotes</span>
+            </a>
+        </div>
+
+        <!-- Drawer Footer Contacts -->
+        <div class="p-5 border-t border-slate-800 bg-slate-950/60 space-y-3">
+            <a href="tel:+919730318707" class="flex items-center gap-3 text-xs text-slate-300 hover:text-cyan-300">
+                <i class="fas fa-phone-alt text-cyan-400 w-4"></i> +91 97303 18707
+            </a>
+            <a href="mailto:info@medicarehub.com" class="flex items-center gap-3 text-xs text-slate-300 hover:text-cyan-300">
+                <i class="fas fa-envelope text-cyan-400 w-4"></i> info@medicarehub.com
+            </a>
+            <a href="{% url 'catalogue:contact' %}" class="w-full py-2.5 rounded-lg bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-semibold text-xs text-center block shadow-md mt-2">
+                Get B2B Wholesale Quote
+            </a>
+        </div>
+    </div>
 
     <!-- Optional Full-Width Hero Section -->
     {% block hero %}{% endblock %}
@@ -247,10 +324,34 @@
         </div>
     </footer>
 
-    <!-- Smart Floating WhatsApp Button -->
-    <a href="javascript:void(0)" onclick="handleGlobalWhatsAppClick()" class="fixed bottom-6 right-6 bg-[#25D366] text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:bg-[#128C7E] hover:scale-110 transition-all z-50 group border-2 border-white" title="Chat on WhatsApp">
-        <i class="fab fa-whatsapp text-3xl"></i>
-        <span class="absolute right-16 bg-white text-gray-800 text-xs font-bold px-3 py-1.5 rounded-lg shadow-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-gray-100 pointer-events-none flex items-center gap-1.5">
+    <!-- Mobile App-Like Bottom Navigation Bar -->
+    <nav id="mobileBottomNav" class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] py-1.5 px-2 flex justify-around items-center">
+        <a href="{% url 'catalogue:home' %}" class="flex flex-col items-center py-1 px-2 rounded-lg {% if request.path == '/' %}text-primary font-bold{% else %}text-slate-500 hover:text-primary{% endif %} transition">
+            <i class="fas fa-home text-base mb-0.5"></i>
+            <span class="text-[10px] tracking-tight">Home</span>
+        </a>
+        <a href="{% url 'catalogue:medicine_list' %}" class="flex flex-col items-center py-1 px-2 rounded-lg {% if 'medicines' in request.path %}text-primary font-bold{% else %}text-slate-500 hover:text-primary{% endif %} transition">
+            <i class="fas fa-pills text-base mb-0.5"></i>
+            <span class="text-[10px] tracking-tight">Medicines</span>
+        </a>
+        <a href="{% url 'catalogue:category_list' %}" class="flex flex-col items-center py-1 px-2 rounded-lg {% if 'categories' in request.path %}text-primary font-bold{% else %}text-slate-500 hover:text-primary{% endif %} transition">
+            <i class="fas fa-heartbeat text-base mb-0.5"></i>
+            <span class="text-[10px] tracking-tight">Categories</span>
+        </a>
+        <a href="{% url 'catalogue:contact' %}" class="flex flex-col items-center py-1 px-2 rounded-lg {% if 'contact' in request.path %}text-primary font-bold{% else %}text-slate-500 hover:text-primary{% endif %} transition">
+            <i class="fas fa-file-invoice text-base mb-0.5"></i>
+            <span class="text-[10px] tracking-tight">Quote</span>
+        </a>
+        <button id="mobileBottomMenuBtn" class="flex flex-col items-center py-1 px-2 rounded-lg text-slate-500 hover:text-primary transition">
+            <i class="fas fa-bars text-base mb-0.5"></i>
+            <span class="text-[10px] tracking-tight">More</span>
+        </button>
+    </nav>
+
+    <!-- Smart Floating WhatsApp Button (Positioned above mobile bar on phones) -->
+    <a href="javascript:void(0)" onclick="handleGlobalWhatsAppClick()" class="fixed bottom-20 md:bottom-6 right-4 md:right-6 bg-[#25D366] text-white w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center shadow-xl hover:bg-[#128C7E] hover:scale-110 transition-all z-40 group border-2 border-white" title="Chat on WhatsApp">
+        <i class="fab fa-whatsapp text-2xl md:text-3xl"></i>
+        <span class="hidden md:flex absolute right-16 bg-white text-gray-800 text-xs font-bold px-3 py-1.5 rounded-lg shadow-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-gray-100 pointer-events-none items-center gap-1.5">
             <span class="w-2 h-2 rounded-full bg-[#25D366] inline-block animate-pulse"></span>
             Order & Inquire on WhatsApp
         </span>
@@ -268,8 +369,51 @@
         }
     }
 
-    // Modern Scroll Animations & Interactive Counters
+    // Mobile Drawer & Search Bar Controllers
     document.addEventListener('DOMContentLoaded', () => {
+        const drawer = document.getElementById('mobileDrawer');
+        const backdrop = document.getElementById('mobileDrawerBackdrop');
+        const openBtn = document.getElementById('mobileMenuOpenBtn');
+        const bottomMenuBtn = document.getElementById('mobileBottomMenuBtn');
+        const closeBtn = document.getElementById('mobileMenuCloseBtn');
+        const searchToggle = document.getElementById('mobileSearchToggle');
+        const searchContainer = document.getElementById('mobileSearchContainer');
+
+        function openDrawer() {
+            if (drawer && backdrop) {
+                backdrop.classList.remove('opacity-0', 'pointer-events-none');
+                backdrop.classList.add('opacity-100');
+                drawer.classList.remove('translate-x-full');
+                drawer.classList.add('translate-x-0');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeDrawer() {
+            if (drawer && backdrop) {
+                backdrop.classList.remove('opacity-100');
+                backdrop.classList.add('opacity-0', 'pointer-events-none');
+                drawer.classList.remove('translate-x-0');
+                drawer.classList.add('translate-x-full');
+                document.body.style.overflow = '';
+            }
+        }
+
+        if (openBtn) openBtn.addEventListener('click', openDrawer);
+        if (bottomMenuBtn) bottomMenuBtn.addEventListener('click', openDrawer);
+        if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
+        if (backdrop) backdrop.addEventListener('click', closeDrawer);
+
+        if (searchToggle && searchContainer) {
+            searchToggle.addEventListener('click', () => {
+                searchContainer.classList.toggle('hidden');
+                const input = searchContainer.querySelector('input');
+                if (!searchContainer.classList.contains('hidden') && input) {
+                    input.focus();
+                }
+            });
+        }
+
         // 1. Scroll-Reveal Observer
         const revealElements = document.querySelectorAll('.reveal-on-scroll');
         if (revealElements.length > 0 && 'IntersectionObserver' in window) {
@@ -280,11 +424,10 @@
                         obs.unobserve(entry.target);
                     }
                 });
-            }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+            }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
 
             revealElements.forEach(el => revealObserver.observe(el));
         } else {
-            // Fallback for immediate visibility
             revealElements.forEach(el => el.classList.add('is-visible'));
         }
 
@@ -303,7 +446,6 @@
                         function updateCounter(now) {
                             const elapsed = now - start;
                             const progress = Math.min(elapsed / duration, 1);
-                            // Smooth ease-out cubic
                             const ease = 1 - Math.pow(1 - progress, 3);
                             const current = Math.floor(ease * target);
                             el.textContent = current + suffix;
@@ -318,21 +460,9 @@
                         obs.unobserve(el);
                     }
                 });
-            }, { threshold: 0.2 });
+            }, { threshold: 0.15 });
 
             counterElements.forEach(el => counterObserver.observe(el));
-        }
-
-        // 3. Header elevation on scroll
-        const header = document.querySelector('header');
-        if (header) {
-            window.addEventListener('scroll', () => {
-                if (window.scrollY > 20) {
-                    header.classList.add('scrolled');
-                } else {
-                    header.classList.remove('scrolled');
-                }
-            }, { passive: true });
         }
     });
     </script>

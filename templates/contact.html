@@ -2,87 +2,91 @@
 {% block title %}Contact Us | MediCare{% endblock %}
 
 {% block content %}
-<div class="max-w-5xl mx-auto py-8">
-    <div class="text-center mb-10">
-        <h1 class="text-3xl font-bold text-textMain mb-4">Contact Us</h1>
-        <p class="text-textSec">We'd love to hear from you. Please fill out the form below or use our contact details.</p>
+<div class="max-w-5xl mx-auto py-4 sm:py-8">
+    <div class="text-center mb-6 sm:mb-10">
+        <h1 class="text-2xl sm:text-3xl font-bold text-textMain mb-2 sm:mb-4">Contact & Wholesale Inquiry</h1>
+        <p class="text-xs sm:text-base text-textSec">Reach out for bulk medicine orders, exports, and distribution partnerships.</p>
     </div>
 
-    <div class="flex flex-col md:flex-row gap-8">
+    <div class="flex flex-col md:flex-row gap-6 sm:gap-8">
         <!-- Contact Info -->
-        <div class="w-full md:w-1/3 space-y-6">
-            <div class="card p-6 flex items-start">
-                <div class="w-12 h-12 rounded-full bg-mint flex items-center justify-center text-primary mr-4 flex-shrink-0">
-                    <i class="fas fa-map-marker-alt text-xl"></i>
+        <div class="w-full md:w-1/3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 gap-3 sm:gap-4">
+            <a href="tel:+919730318707" class="card p-4 sm:p-5 flex items-start hover:shadow-md transition group border-l-4 border-l-primary">
+                <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-mint flex items-center justify-center text-primary mr-3 sm:mr-4 flex-shrink-0 group-hover:scale-105 transition-transform">
+                    <i class="fas fa-phone-alt text-base sm:text-lg"></i>
                 </div>
                 <div>
-                    <h3 class="font-bold text-textMain mb-1">Our Location</h3>
-                    <p class="text-sm text-textSec">123 Health Avenue, Medical District, New Delhi, India 110001</p>
+                    <h3 class="font-bold text-xs sm:text-sm text-textMain mb-0.5">Call Us Directly</h3>
+                    <p class="text-xs sm:text-sm text-primary font-semibold">+91 97303 18707</p>
+                    <p class="text-[11px] text-textSec">Tap to call</p>
+                </div>
+            </a>
+            
+            <a href="mailto:info@medicarehub.com" class="card p-4 sm:p-5 flex items-start hover:shadow-md transition group border-l-4 border-l-primary">
+                <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-mint flex items-center justify-center text-primary mr-3 sm:mr-4 flex-shrink-0 group-hover:scale-105 transition-transform">
+                    <i class="fas fa-envelope text-base sm:text-lg"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-xs sm:text-sm text-textMain mb-0.5">Email Support</h3>
+                    <p class="text-xs sm:text-sm text-primary font-semibold truncate">info@medicarehub.com</p>
+                    <p class="text-[11px] text-textSec">Tap to send email</p>
+                </div>
+            </a>
+
+            <div class="card p-4 sm:p-5 flex items-start border-l-4 border-l-primary">
+                <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-mint flex items-center justify-center text-primary mr-3 sm:mr-4 flex-shrink-0">
+                    <i class="fas fa-map-marker-alt text-base sm:text-lg"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-xs sm:text-sm text-textMain mb-0.5">Location</h3>
+                    <p class="text-xs text-textSec leading-snug">Medical Export District, New Delhi, India</p>
                 </div>
             </div>
             
-            <div class="card p-6 flex items-start">
-                <div class="w-12 h-12 rounded-full bg-mint flex items-center justify-center text-primary mr-4 flex-shrink-0">
-                    <i class="fas fa-phone-alt text-xl"></i>
+            <div class="card p-4 sm:p-5 flex items-start border-l-4 border-l-primary">
+                <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-mint flex items-center justify-center text-primary mr-3 sm:mr-4 flex-shrink-0">
+                    <i class="fas fa-clock text-base sm:text-lg"></i>
                 </div>
                 <div>
-                    <h3 class="font-bold text-textMain mb-1">Call Us</h3>
-                    <p class="text-sm text-textSec">+91 97303 18707<br>+91 11 2345 6789</p>
-                </div>
-            </div>
-            
-            <div class="card p-6 flex items-start">
-                <div class="w-12 h-12 rounded-full bg-mint flex items-center justify-center text-primary mr-4 flex-shrink-0">
-                    <i class="fas fa-envelope text-xl"></i>
-                </div>
-                <div>
-                    <h3 class="font-bold text-textMain mb-1">Email Us</h3>
-                    <p class="text-sm text-textSec">info@medicarehub.com<br>support@medicarehub.com</p>
-                </div>
-            </div>
-            
-            <div class="card p-6 flex items-start">
-                <div class="w-12 h-12 rounded-full bg-mint flex items-center justify-center text-primary mr-4 flex-shrink-0">
-                    <i class="fas fa-clock text-xl"></i>
-                </div>
-                <div>
-                    <h3 class="font-bold text-textMain mb-1">Working Hours</h3>
-                    <p class="text-sm text-textSec">Monday - Saturday<br>9:00 AM - 7:00 PM</p>
+                    <h3 class="font-bold text-xs sm:text-sm text-textMain mb-0.5">Working Hours</h3>
+                    <p class="text-xs text-textSec leading-snug">Mon - Sat: 9:00 AM - 7:00 PM</p>
                 </div>
             </div>
         </div>
 
         <!-- Contact Form -->
         <div class="w-full md:w-2/3">
-            <div class="card p-8">
-                <h2 class="text-xl font-bold text-textMain mb-6">Send us a Message</h2>
-                <form action="#" method="POST" class="space-y-4">
+            <div class="card p-5 sm:p-8">
+                <h2 class="text-lg sm:text-xl font-bold text-textMain mb-4 sm:mb-6">Send an Inquiry / Get Quote</h2>
+                <form action="#" method="POST" class="space-y-3.5 sm:space-y-4">
                     {% csrf_token %}
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-textMain mb-1">Your Name</label>
-                            <input type="text" required class="w-full border border-borderL rounded-md py-2 px-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+                            <label class="block text-xs sm:text-sm font-medium text-textMain mb-1">Your Name</label>
+                            <input type="text" required placeholder="e.g. John Doe" class="w-full border border-borderL rounded-lg py-2 sm:py-2.5 px-3 text-xs sm:text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary bg-white">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-textMain mb-1">Email Address</label>
-                            <input type="email" required class="w-full border border-borderL rounded-md py-2 px-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+                            <label class="block text-xs sm:text-sm font-medium text-textMain mb-1">Email Address</label>
+                            <input type="email" required placeholder="name@company.com" class="w-full border border-borderL rounded-lg py-2 sm:py-2.5 px-3 text-xs sm:text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary bg-white">
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-textMain mb-1">Phone Number</label>
-                            <input type="text" class="w-full border border-borderL rounded-md py-2 px-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+                            <label class="block text-xs sm:text-sm font-medium text-textMain mb-1">Phone / WhatsApp</label>
+                            <input type="tel" placeholder="+91 ..." class="w-full border border-borderL rounded-lg py-2 sm:py-2.5 px-3 text-xs sm:text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary bg-white">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-textMain mb-1">Subject</label>
-                            <input type="text" required class="w-full border border-borderL rounded-md py-2 px-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+                            <label class="block text-xs sm:text-sm font-medium text-textMain mb-1">Subject / Product Required</label>
+                            <input type="text" required placeholder="e.g. Bulk Retinol Tablets" class="w-full border border-borderL rounded-lg py-2 sm:py-2.5 px-3 text-xs sm:text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary bg-white">
                         </div>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-textMain mb-1">Message</label>
-                        <textarea rows="5" required class="w-full border border-borderL rounded-md py-2 px-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"></textarea>
+                        <label class="block text-xs sm:text-sm font-medium text-textMain mb-1">Message & Quantity Requirements</label>
+                        <textarea rows="4" required placeholder="Specify medicine name, dosage, packaging and destination country..." class="w-full border border-borderL rounded-lg py-2 sm:py-2.5 px-3 text-xs sm:text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary bg-white"></textarea>
                     </div>
-                    <button type="submit" class="btn-primary w-full md:w-auto px-8 py-3">Send Message</button>
+                    <button type="submit" class="btn-primary w-full sm:w-auto px-8 py-3 text-sm font-semibold rounded-lg shadow-sm hover:shadow">
+                        <i class="fas fa-paper-plane mr-1.5"></i> Send Inquiry
+                    </button>
                 </form>
             </div>
         </div>

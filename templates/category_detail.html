@@ -77,34 +77,34 @@
             </div>
 
             <!-- Responsive Cards Grid for Category Assets -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4">
                 {% for c_img in category.category_images.all %}
-                <div class="card p-4 flex flex-col hover:shadow-lg transition-all duration-200 border border-borderL rounded-xl bg-white group hover:border-primary/40">
-                    <div class="h-44 bg-white flex items-center justify-center rounded-lg mb-3 p-2.5 overflow-hidden border border-gray-50 group-hover:bg-gray-50/50 transition-colors">
+                <div class="card p-2.5 sm:p-4 flex flex-col hover:shadow-lg transition-all duration-200 border border-borderL rounded-xl bg-white group hover:border-primary/40">
+                    <div class="h-28 sm:h-44 bg-white flex items-center justify-center rounded-lg mb-2 sm:mb-3 p-1.5 sm:p-2.5 overflow-hidden border border-gray-50 group-hover:bg-gray-50/50 transition-colors">
                         <img src="{{ c_img.image.url }}" alt="{{ c_img.clean_title }}" class="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-105" loading="lazy">
                     </div>
                     
-                    <div class="flex items-center justify-between gap-1 mb-1.5">
-                        <span class="text-[11px] font-bold text-primary bg-mint px-2 py-0.5 rounded">
-                            {{ c_img.medicine.form|default:"Pharmaceutical" }}
+                    <div class="flex items-center justify-between gap-1 mb-1 sm:mb-1.5">
+                        <span class="text-[9px] sm:text-[11px] font-bold text-primary bg-mint px-1.5 sm:px-2 py-0.5 rounded truncate">
+                            {{ c_img.medicine.form|default:"Medicine" }}
                         </span>
                         {% if c_img.medicine.prescription_required %}
-                        <span class="text-[10px] text-red-600 font-bold bg-red-50 px-1.5 py-0.5 rounded border border-red-100">Rx</span>
+                        <span class="text-[9px] sm:text-[10px] text-red-600 font-bold bg-red-50 px-1 sm:px-1.5 py-0.5 rounded border border-red-100">Rx</span>
                         {% else %}
-                        <span class="text-[10px] text-green-700 font-bold bg-green-50 px-1.5 py-0.5 rounded border border-green-100">OTC</span>
+                        <span class="text-[9px] sm:text-[10px] text-green-700 font-bold bg-green-50 px-1 sm:px-1.5 py-0.5 rounded border border-green-100">OTC</span>
                         {% endif %}
                     </div>
 
-                    <h4 class="font-extrabold text-textMain text-sm mb-1 leading-snug text-truncate-2 group-hover:text-primary transition-colors" title="{{ c_img.clean_title }}">
+                    <h4 class="font-extrabold text-textMain text-xs sm:text-sm mb-1 leading-snug text-truncate-2 group-hover:text-primary transition-colors" title="{{ c_img.clean_title }}">
                         {{ c_img.clean_title }}
                     </h4>
                     
-                    <p class="text-xs text-textSec mb-3 truncate">
-                        <span class="font-medium text-gray-400">Mfg:</span> {{ c_img.medicine.manufacturer.name|default:"Cipla Ltd." }}
+                    <p class="text-[10px] sm:text-xs text-textSec mb-2 sm:mb-3 truncate">
+                        <span class="font-medium text-gray-400">Mfg:</span> {{ c_img.medicine.manufacturer.name|default:"Cipla Ltd."|truncatechars:16 }}
                     </p>
                     
-                    <div class="mt-auto pt-3 border-t border-borderL">
-                        <a href="{% url 'catalogue:medicine_detail' c_img.get_medicine_slug %}" class="btn-primary w-full text-center block text-xs font-bold py-2 rounded-lg shadow-xs hover:shadow-sm">
+                    <div class="mt-auto pt-2 sm:pt-3 border-t border-borderL">
+                        <a href="{% url 'catalogue:medicine_detail' c_img.get_medicine_slug %}" class="btn-primary w-full text-center block text-[11px] sm:text-xs font-bold py-1.5 sm:py-2 rounded-lg shadow-xs hover:shadow-sm">
                             View Details &rarr;
                         </a>
                     </div>
